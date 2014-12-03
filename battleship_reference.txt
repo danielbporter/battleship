@@ -1,0 +1,1 @@
+next_moves_naive_player(MyInitialShipPlacement, OwnHistory, OpponentHistory, OwnBoard, OpponentBoard, [position(a,1)]).
