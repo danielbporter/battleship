@@ -1,1 +1,49 @@
-next_moves_naive_player(MyInitialShipPlacement, OwnHistory, OpponentHistory, OwnBoard, OpponentBoard, [position(a,1)]).
+increment(A, B)
+    If column (number) B is A+1
+    If row (letter) B is next alphabet character
+
+less_than_or_equal(A, B)
+    True if A <= B (letter or number)
+
+translate_row_to_letter(A, B)
+    A is a letter
+    B is a number
+
+translate_row_letter_to_number(A, B)
+    A is number
+    B is letter
+
+positions_covered(A, B, N)
+    N is the number of spaces between positions A and B
+
+valid_ship_placement(Ship)
+    True is Ship is on the board and of the proper length
+
+non_overlapping_placements(Ships)
+    True if all Ships are not overlapping
+
+legal_placement(Ships)
+    True if all ships are valid and not overlapping
+
+board_get_value(Board, Row, Column, Value)
+    Gets the value of a specific position on the board
+
+remove_last_row(A, B)
+    Board B is A with the last row removed
+
+board_set_value(OldBoard, Row, Letter, Value, NewBoard)
+    NewBoard is OldBoard with (R,C) set to Value
+
+all_ships(Ships)
+    Ships is [carrier, battleship, cruiser, submarine, destroyer]
+
+ships_sunk(TurnHistory, ShipsSunk)
+    All ships fully sunk on the given turn history
+
+move_present_in_history(Position, History)
+    True if Position has not been played on in History
+
+go(Player1, Player2)
+    Starts a game using the Player1 and Player2 entry tags
+    My player tag is player_dp
+    My naive player tag could be naive_player_dp

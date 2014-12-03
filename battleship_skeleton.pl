@@ -1,53 +1,30 @@
 usemodule(library(lists), [member, union, nth0, nth1, last, reverse, same_length, permutation]).
 
-:- style_check(-singleton).
-
-% runner predicates
-go1 :- go(player_dp,naive_player2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Entry Point Predicates   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % initial configuration entry point into player specific code
-initial_configuration(player_dp, InitalConfiguration) :- initial_configuration_naive_dp(InitialConfiguration).
+% initial_configuration(player_dp, InitalConfiguration) :-
+%     initial_configuration_dp(InitialConfiguration).
 
 % next moves entry point into player specific code
-next_moves(player_dp, InitialConfiguration, OwnHistory, OpponentHistory, OwnBoard, OpponentBoard, NextMoves) :-
-  next_moves_naive_dp(InitialConfiguration, OwnHistory, OpponentHistory, OwnBoard, OpponentBoard, NextMoves).
+% next_moves(player_dp, InitialConfiguration, OwnHistory, OpponentHistory,
+%         OwnBoard, OpponentBoard, NextMoves) :-
+%     next_moves_dp(InitialConfiguration, OwnHistory, OpponentHistory,
+%     OwnBoard, OpponentBoard, NextMoves).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%        Naive Player        %
+%          Game Code         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% CHANGE THIS BEFORE DELIVERY
-% naive initial configuration
-initial_configuration_naive_dp([carrier(position(f, 2), position(f, 6)),
-                                battleship(position(a, 7), position(d, 7)),
-                                cruiser(position(a, 1), position(a, 3)),
-                                submarine(position(j, 10), position(j, 8)),
-                                destroyer(position(a, 10), position(b, 10))]).
-
-% next_moves for a basic naive player
-    % base case: first move
-    next_moves_naive_dp(InitialConfiguration, [], OpponentHistory, OwnBoard, OpponentBoard, [position(a, 1)]).
-
-    % next move is the incremented position of the last move
-    next_moves_naive_dp(InitialConfiguration, [LastMove | OwnHistory], OpponentHistory, OwnBoard, OpponentBoard, [NextMove]) :- next_sequential_position_dp(LastMove, NextMove), write('next2'), nl.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     Utility Predicates     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% If first position is the last board position, wrap around to the first.
-next_sequential_position_dp(position(j, 10), position(a, 1)).
-% If column is 10 and row is not 10, increment the row.
-next_sequential_position_dp(position(R1, 10), position(R2, 1)) :- increment(R1,R2).
-% Do I need to prevent backtracking from (10, 10) -> (1, 1)?
-%   R1 < 10.
-next_sequential_position_dp(position(R1, C1), position(R1, C2)) :- increment(C1,C2).
-%   R1 < 10, C1 < 10, C2 is C1+1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      Game Engine Code      %
