@@ -21,7 +21,7 @@ next_moves(player_dp, InitialConfiguration, OwnHistory, OpponentHistory, OwnBoar
 %        Naive Player        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% CHANGE THIS BEFORE DELIVERY
+% CHANGE THIS BEFORE DELIVERY TO "official" naive ship placement
 % naive initial configuration
 initial_configuration_naive_dp([carrier(position(f, 2), position(f, 6)),
                                 battleship(position(a, 7), position(d, 7)),
@@ -34,7 +34,7 @@ initial_configuration_naive_dp([carrier(position(f, 2), position(f, 6)),
     next_moves_naive_dp(InitialConfiguration, [], OpponentHistory, OwnBoard, OpponentBoard, [position(a, 1)]).
 
     % next move is the incremented position of the last move
-    next_moves_naive_dp(InitialConfiguration, [LastMove | OwnHistory], OpponentHistory, OwnBoard, OpponentBoard, [NextMove]) :- next_sequential_position_dp(LastMove, NextMove), write('next2'), nl.
+    next_moves_naive_dp(InitialConfiguration, [turn(LastPosition, _, _) | OwnHistory], OpponentHistory, OwnBoard, OpponentBoard, [NextPosition]) :- next_sequential_position_dp(LastPosition, NextPosition).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     Utility Predicates     %

@@ -1,5 +1,7 @@
 usemodule(library(lists), [member, union, nth0, nth1, last, reverse, same_length, permutation]).
 
+% Suppress compiler warnings for singleton variables.
+:- style_check(-singleton).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Entry Point Predicates   %

@@ -1,5 +1,84 @@
 usemodule(library(lists), [member, union, nth0, nth1, last, reverse, same_length, permutation]).
 
+% Suppress compiler warnings for singleton variables.
+:- style_check(-singleton).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    Entry Point Predicates   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% initial configuration entry point into player specific code
+initial_configuration(player_dp, InitalConfiguration) :-
+    initial_configuration_dp(InitialConfiguration).
+
+% next moves entry point into player specific code
+next_moves(player_dp, InitialConfiguration, OwnHistory, OpponentHistory,
+        OwnBoard, OpponentBoard, NextMoves) :-
+    next_moves_dp(InitialConfiguration, OwnHistory, OpponentHistory,
+    OwnBoard, OpponentBoard, NextMoves).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Game Code         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% next_moves_dp(InitialConfiguration, OwnHistory, OpponentHistory, OwnBoard, OpponentBoard, NextMoves) :-
+	% code goes here
+
+
+% First, score the board
+% Gather all positions with the highest score
+% If there is only one, make that move
+% If there a multiple, filter list further
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     Utility Predicates     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% score_board_dp(UnscoredBoard, ScoredBoard).
+
+get_score_dp(Board, Row, Column, -1) :- board_get_value(Board, Row, Column, hit).
+get_score_dp(Board, Row, Column, -1) :- board_get_value(Board, Row, Column, miss).
+get_score_dp(Board, Row, Column, Score) :-
+	count_north_of_dp(Board, Row, Column, NorthCount), count_east_of_dp(Board, Row, Column, EastCount),
+	count_south_of_dp(Board, Row, Column, SouthCount), count_west_of_dp(Board, Row, Column, WestCount),
+	Score is NorthCount+SouthCount+EastCount+WestCount.
+
+% count_<direction>_of_dp(Board, Row , Column, Count) counts the number of spaces between (Row, Column) and an unplayable square.
+% Open spaces receive a count of 1 and if (Row,Column) is on the same row or column as a hit with only open spaces between it
+% the space will receive a bonus of +50.
+% 
+count_north_of_dp(Board, Row, Column, 0) :- increment(RowUpOne, Row), board_get_value(Board, RowUpOne, Column, miss).
+count_north_of_dp(Board, Row, Column, 50) :- increment(RowUpOne, Row), board_get_value(Board, RowUpOne, Column, hit).
+count_north_of_dp(Board, Row, Column, Count) :- increment(RowUpOne, Row), count_north_of_dp(Board, RowUpOne, Column, CountUpOne),
+	Count is CountUpOne+1.
+
+count_east_of_dp(Board, Row, Column, 0) :- increment(Column, ColumnRightOne), board_get_value(Board, Row, ColumnRightOne, miss).
+count_east_of_dp(Board, Row, Column, 50):- increment(Column, ColumnRightOne), board_get_value(Board, Row, ColumnRightOne, hit).
+count_east_of_dp(Board,Row, Column, Count) :- increment(Column, ColumnRightOne), count_east_of_dp(Board, Row, ColumnRightOne, CountRightOne),
+	Count is CountRightOne+1.
+
+count_south_of_dp(Board, Row, Column, 0) :- increment(Row, RowDownOne), board_get_value(Board, RowDownOne, Column, miss).
+count_south_of_dp(Board, Row, Column, 50) :-increment(Row, RowDownOne), board_get_value(Board, RowDownOne, Column, hit).
+count_south_of_dp(Board, Row, Column, Count) :- increment(Row, RowDownOne), count_south_of_dp(Board, RowDownOne, Column, CountDownOne),
+        Count is CountDownOne+1.
+
+count_east_of_dp(Board, Row, Column, 0) :- increment(ColumnLeftOne, Column), board_get_value(Board, Row, ColumnLeftOne, miss).
+count_east_of_dp(Board, Row, Column, 50):- increment(ColumnLeftOne, Column), board_get_value(Board, Row, ColumnLeftOne, hit).
+count_east_of_dp(Board,Row, Column, Count) :- increment(ColumnLeftOne, Column), count_east_of_dp(Board,Row, ColumnLeftOne, CountLeftOne),
+        Count is CountLeftOne+1.
+
+% apply to board applies the predicate to each position in the board, resulting in a new board.
+apply_to_board_dp(Board, Goal, NewBoard)
+apply_to_row_dp(Row, Goal, NewBoard)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      Game Engine Code      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %INCREMENT
 increment(1, 2).
 increment(2, 3).
