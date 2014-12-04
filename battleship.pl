@@ -36,10 +36,22 @@ next_moves(player_dp, InitialConfiguration, OwnHistory, OpponentHistory,
 %     Utility Predicates     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% score_board_dp(UnscoredBoard, ScoredBoard).
+% score_board_dp([Row | RestOfRows], Row, [ScoredRow | RestOfScoredRows]).
+score_board_dp(Board, ScoredBoard) :-
+	score_board_dp(Board, 1, ScoredBoard, Board).
+score_board_dp([LastRow], 10, [ScoredRow], Board) :-
+	score_row_dp(LastRow, 10, ScoredRow, Board).
+score_row_dp(Row, RowLetter, ScoredRow, Board) :-
+	score_row_dp(Row, RowLetter, 1, ScoredRow, Board).
+score_row_dp([Element], Row, 10, [Score], Board) :-
+	get_score_dp(Board, Row, 10, Score).
+score_row_dp([Element | RestOfRow], Row, Column, [Score | RestOfScores], Board) :-
+	get_score_dp(Board, Row, Column, Score), NextColumn is Column+1,
+	score_row_dp(RestOfRow, Row, NextColumn, RestOfScores, Board).
 
-get_score_dp(Board, Row, Column, -1) :- board_get_value(Board, Row, Column, hit).
-get_score_dp(Board, Row, Column, -1) :- board_get_value(Board, Row, Column, miss).
+% get_score_dp(Board, Row, Column, Score).
+get_score_dp(Board, Row, Column, -1) :-
+	board_get_value(Board, Row, Column, Result), (Result is hit ; Result is miss).
 get_score_dp(Board, Row, Column, Score) :-
 	count_north_of_dp(Board, Row, Column, NorthCount), count_east_of_dp(Board, Row, Column, EastCount),
 	count_south_of_dp(Board, Row, Column, SouthCount), count_west_of_dp(Board, Row, Column, WestCount),
@@ -49,29 +61,37 @@ get_score_dp(Board, Row, Column, Score) :-
 % Open spaces receive a count of 1 and if (Row,Column) is on the same row or column as a hit with only open spaces between it
 % the space will receive a bonus of +50.
 % 
-count_north_of_dp(Board, Row, Column, 0) :- increment(RowUpOne, Row), board_get_value(Board, RowUpOne, Column, miss).
-count_north_of_dp(Board, Row, Column, 50) :- increment(RowUpOne, Row), board_get_value(Board, RowUpOne, Column, hit).
-count_north_of_dp(Board, Row, Column, Count) :- increment(RowUpOne, Row), count_north_of_dp(Board, RowUpOne, Column, CountUpOne),
-	Count is CountUpOne+1.
 
-count_east_of_dp(Board, Row, Column, 0) :- increment(Column, ColumnRightOne), board_get_value(Board, Row, ColumnRightOne, miss).
+count_north_of_dp(Board, Row, Column, 50) :- increment(RowUpOne, Row), board_get_value(Board, RowUpOne, Column, hit), !.
+count_north_of_dp(Board, Row, Column, Count) :- increment(RowUpOne, Row), count_north_of_dp(Board, RowUpOne, Column, CountUpOne),
+	Count is CountUpOne+1, !.
+count_north_of_dp(Board, Row, Column, 0).
+
 count_east_of_dp(Board, Row, Column, 50):- increment(Column, ColumnRightOne), board_get_value(Board, Row, ColumnRightOne, hit).
 count_east_of_dp(Board,Row, Column, Count) :- increment(Column, ColumnRightOne), count_east_of_dp(Board, Row, ColumnRightOne, CountRightOne),
 	Count is CountRightOne+1.
+count_east_of_dp(Board, Row, Column, 0).
 
-count_south_of_dp(Board, Row, Column, 0) :- increment(Row, RowDownOne), board_get_value(Board, RowDownOne, Column, miss).
-count_south_of_dp(Board, Row, Column, 50) :-increment(Row, RowDownOne), board_get_value(Board, RowDownOne, Column, hit).
+count_south_of_dp(Board, Row, Column, 50) :-increment(Row, RowDownOne), board_get_value(Board, RowDownOne, Column, hit), !.
 count_south_of_dp(Board, Row, Column, Count) :- increment(Row, RowDownOne), count_south_of_dp(Board, RowDownOne, Column, CountDownOne),
-        Count is CountDownOne+1.
+    Count is CountDownOne+1, !.
+count_south_of_dp(Board, Row, Column, 0).
 
-count_east_of_dp(Board, Row, Column, 0) :- increment(ColumnLeftOne, Column), board_get_value(Board, Row, ColumnLeftOne, miss).
-count_east_of_dp(Board, Row, Column, 50):- increment(ColumnLeftOne, Column), board_get_value(Board, Row, ColumnLeftOne, hit).
-count_east_of_dp(Board,Row, Column, Count) :- increment(ColumnLeftOne, Column), count_east_of_dp(Board,Row, ColumnLeftOne, CountLeftOne),
-        Count is CountLeftOne+1.
+count_west_of_dp(Board, Row, Column, 50):- increment(ColumnLeftOne, Column), board_get_value(Board, Row, ColumnLeftOne, hit), !.
+count_west_of_dp(Board,Row, Column, Count) :- increment(ColumnLeftOne, Column), count_west_of_dp(Board,Row, ColumnLeftOne, CountLeftOne),
+        Count is CountLeftOne+1, !.
+count_west_of_dp(Board, Row, Column, 0).
 
 % apply to board applies the predicate to each position in the board, resulting in a new board.
-apply_to_board_dp(Board, Goal, NewBoard)
-apply_to_row_dp(Row, Goal, NewBoard)
+% apply_to_board_dp(Board, Goal, NewBoard)
+% apply_to_row_dp(Row, Goal, NewBoard)
+
+% print_board(Board).
+print_board_dp([LastRow]) :- print_row(LastRow).
+print_board_dp([Row | RestOfBoard]) :- print_row(Row), nl, print_board(RestOfBoard).
+
+print_row_dp([Element]) :- print(Element), nl.
+print_row_dp([Element | RestOfRow]) :- print(Element), print(' '), print_row(RestOfRow).
 
 
 
